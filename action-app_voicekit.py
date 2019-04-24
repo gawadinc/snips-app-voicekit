@@ -58,10 +58,10 @@ class VoiceKit(object):
         # action code goes here...
         print('[Received] intent: {}'.format(intent_message.intent.intent_name))
 		direction = slots.direction.first().value
-		if direction == 'left':
-			self.relay.on()
-		elif direction == 'right':
-			self.relay.off()
+        if direction == 'left':
+            self.relay.on()
+        elif direction == 'right':
+            self.relay.off()
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(intent_message.site_id, "Signal is off", "")
