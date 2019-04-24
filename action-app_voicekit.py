@@ -31,8 +31,9 @@ class VoiceKit(object):
         except :
             self.config = None
             self.mqtt_address = MQTT_ADDR
-
-        self.relay = grove.grove_relay.Grove(13)
+		
+		self.relay12 = grove.grove_relay.Grove(12)
+        self.relay13 = grove.grove_relay.Grove(13)
         self.temperature_humidity_sensor = grove.grove_temperature_humidity_sensor_sht3x.Grove()
 
         # start listening to MQTT
@@ -45,10 +46,10 @@ class VoiceKit(object):
         
         # action code goes here...
         print('[Received] intent: {}'.format(intent_message.intent.intent_name))
-        self.relay.on()
-
+        self.relay12.off()
+		self.relay13.off()
         # if need to speak the execution result by tts
-        hermes.publish_start_session_notification(intent_message.site_id, "Relay is on", "")
+        hermes.publish_start_session_notification(intent_message.site_id, "Signal is on", "")
 
     def relay_off(self, hermes, intent_message):
         # terminate the session first if not continue
@@ -56,10 +57,14 @@ class VoiceKit(object):
 
         # action code goes here...
         print('[Received] intent: {}'.format(intent_message.intent.intent_name))
-        self.relay.off()
+		direction = slots.direction.first().value
+		if direction == 'left':
+			self.relay12.on()
+		elif direction == 'right':
+			self.relay13.on()
 
         # if need to speak the execution result by tts
-        hermes.publish_start_session_notification(intent_message.site_id, "Relay is off", "")
+        hermes.publish_start_session_notification(intent_message.site_id, "Signal is off", "")
 
     def answer_temperature(self, hermes, intent_message):
         # terminate the session first if not continue
