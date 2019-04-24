@@ -94,7 +94,7 @@ class VoiceKit(object):
     # --> Master callback function, triggered everytime an intent is recognized
     def master_intent_callback(self,hermes, intent_message):
         coming_intent = intent_message.intent.intent_name
-        if coming_intent == 'gawadinc:relay_on':
+        if coming_intent == 'seeed:relay_on':
             self.relay_on(hermes, intent_message)
         elif coming_intent == 'gawadinc:relay_off':
             self.relay_off(hermes, intent_message)
