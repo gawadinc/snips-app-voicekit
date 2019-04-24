@@ -57,7 +57,7 @@ class VoiceKit(object):
 
         # action code goes here...
         print('[Received] intent: {}'.format(intent_message.intent.intent_name))
-		direction = slots.direction.first().value
+        direction = slots.direction.first().value
         if direction == 'left':
             self.relay.on()
         elif direction == 'right':
