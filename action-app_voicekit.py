@@ -46,10 +46,13 @@ class VoiceKit(object):
         
         # action code goes here...
         print('[Received] intent: {}'.format(intent_message.intent.intent_name))
-        self.relay12.off()
-        self.relay13.off()
+        direction = intent_message.slots.direction.first().value
+        if direction == 'left':
+            self.relay12.off()
+        elif direction == 'right':
+            self.relay13.off()
         # if need to speak the execution result by tts
-        hermes.publish_start_session_notification(intent_message.site_id, "Signal is on", "")
+        hermes.publish_start_session_notification(intent_message.site_id, "Signal {} is on".format(str(direction)), "")
 
     def relay_off(self, hermes, intent_message):
         # terminate the session first if not continue
@@ -79,29 +82,13 @@ class VoiceKit(object):
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(intent_message.site_id, "The temperature is {} degree".format(int(temperature)), "")
 
-    def answer_humidity(self, hermes, intent_message):
-        # terminate the session first if not continue
-        hermes.publish_end_session(intent_message.session_id, "")
-
-        # action code goes here...
-        print('[Received] intent: {}'.format(intent_message.intent.intent_name))
-
-        _, humidity = self.temperature_humidity_sensor.read()
-
-        # if need to speak the execution result by tts
-        hermes.publish_start_session_notification(intent_message.site_id, "The humidity is {} percent".format(int(humidity)), "")
-
     # --> Master callback function, triggered everytime an intent is recognized
     def master_intent_callback(self,hermes, intent_message):
         coming_intent = intent_message.intent.intent_name
-        if coming_intent == 'seeed:relay_on':
+        if coming_intent == 'gawadinc:relay_on':
             self.relay_on(hermes, intent_message)
         elif coming_intent == 'gawadinc:relay_off':
             self.relay_off(hermes, intent_message)
-        elif coming_intent == 'seeed:ask_temperature':
-            self.answer_temperature(hermes, intent_message)
-        elif coming_intent == 'seeed:ask_humidity':
-            self.answer_humidity(hermes, intent_message)
 
     # --> Register callback function and start MQTT
     def start_blocking(self):
